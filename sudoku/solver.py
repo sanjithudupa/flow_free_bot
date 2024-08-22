@@ -22,6 +22,8 @@ def parse(puzzle_str):
         grid.append(list(line))
     return grid
 
+# horrendous but copy pasted from my leetcode solution to this problem so i didnt have to write it again
+# realistically there is no need to search all over the grid again each time but its only 81 squares so np
 def isValidSudoku(board):
     col_sets = [set() for _ in range(9)]
     subbox_sets = [[set()for _ in range(3)] for _ in range(3)] #for simplicty, making it a 2d array
