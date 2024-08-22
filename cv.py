@@ -9,11 +9,11 @@ def isBlack(color):
 def colorDistance(color1, color2):
     return math.sqrt((color1[0] - color2[0])**2 + (color1[1] - color2[1])**2 + (color1[2] - color2[2])**2)
 
-alphabet = "abcdefghijklmnopqrstuvwxyz".split()
+alphabet = list("abcdefghijklmnopqrstuvwxyz")
 
 def to_hex(key):
     if key <= 9:
-        return key
+        return str(key)
     diff = key - 10
     return alphabet[diff]
 
@@ -39,7 +39,7 @@ def get_puzzle_str():
                     grid += str(colors[checkAgainst])
             
             if not found:
-                colors[color] = len(colors) + 1
-                grid += str(len(colors))
+                colors[color] = to_hex(len(colors) + 1)
+                grid += to_hex(len(colors))
         grid += "\n"
     return grid

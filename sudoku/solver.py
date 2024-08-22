@@ -1,3 +1,5 @@
+## super simple backtracking-based sudoku solver I wrote to get an idea for how flow backtracking could work
+
 puzzle_str = """
 .7.583.2.
 .592..3..
