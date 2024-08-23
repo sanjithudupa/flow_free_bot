@@ -2,13 +2,13 @@ from solver import parse
 from constants import *
 import copy
 
-puzzle_str ="""
-1.2.3
-..4.5
-.....
-.2.3.
-.145.
-"""
+# puzzle_str ="""
+# 1.2.3
+# ..4.5
+# .....
+# .2.3.
+# .145.
+# """
 
 # puzzle_str = """
 # ...12
@@ -17,6 +17,17 @@ puzzle_str ="""
 # ...4.
 # 243..
 # """
+
+puzzle_str = """
+....1.23
+....4...
+..5....1
+....46..
+........
+..52.6..
+.....3..
+........
+"""
 
 def get_neighbors(grid, cell):
     dirs = ["up", "left", "down", "right"]
@@ -73,41 +84,48 @@ def isValidGrid(grid):
             
     return True
 
-def dfs(grid, sources):
-    sawOne = False
+# def dfs(grid, sources):
+#     sawOne = False
 
-    r = 0
-    for row in grid:
-        c = 0
-        for square in row:
-            if square == ".":
-                sawOne = True
+#     r = 0
+#     for row in grid:
+#         c = 0
+#         for square in row:
+#             if square == ".":
+#                 sawOne = True
+#                 for source in sources:
+#                     np = copy.deepcopy(grid)
+#                     np[r][c] = source
+#                     if isValidGrid(np):
+#                         return dfs(np, sources)
+#             c += 1
+#         r += 1
+
+#     if not sawOne:
+#         return grid
+#     return grid
+
+def dfs(grid, sources):
+    for r in range(len(grid)):
+        for c in range(len(grid[r])):
+            if grid[r][c] == ".":
                 for source in sources:
                     np = copy.deepcopy(grid)
                     np[r][c] = source
                     if isValidGrid(np):
-                        return dfs(np, sources)
-            c += 1
-        r += 1
-
-    if not sawOne:
-        return grid
+                        result = dfs(np, sources)
+                        if result is not None:
+                            return result
+                return None  # If no valid path, return None
     return grid
 
 def _solve(grid, sources):
     solvable = isValidGrid(grid)
     if not solvable:
-        return
+        return None
 
     solved = dfs(grid, sources)
     return solved
-
-def format_solution(solution_grid):
-    for r in len(solution_grid):
-        for c in len(solution_grid[r]):
-            solution_grid[r][c] = solution_grid[r][c].replace("s", "")
-    
-    return solution_grid
 
 def has_empty(grid):
     for row in grid:
@@ -117,19 +135,20 @@ def has_empty(grid):
     return False
 
 def solve(grid, sources):
-    count = 1
+    max_attempts = 1000  # Define a maximum number of attempts to avoid infinite loops
+    count = 0
     
-    while True: # deepcopy should have fixed the need for this
+    while count < max_attempts:
         solution = _solve(copy.deepcopy(grid), sources)
         
-        if not has_empty(solution) and solution != None and isValidGrid(solution):
-            break
+        if solution is not None and not has_empty(solution) and isValidGrid(solution):
+            return solution
         
         count += 1
-        print("try again")
+        print(f"Try again {count}")
 
-    # print(f"Num solutions {count}")
-    return (solution)
+    print("Unable to find a solution within the maximum attempts.")
+    return None
 # rules: each thing must either have an empty square or two neighboring
 
 def colored_board(solution, sources):
@@ -151,14 +170,59 @@ def colored_board(solution, sources):
 
 sources, grid = parse(puzzle_str)
 solution = solve(grid, sources)
-print(solution)
-print(colored_board(solution, sources))
+
+if solution:
+    print(colored_board(solution, sources))
+else:
+    print("No solution found.")
 
 
-# neighbors = get_neighbors(grid, [1,2])
-# print(neighbors)
-# print(sources)
 
-# grid[0][1] = "4"
 
-# print(isValidGrid(grid))
+def find_empty_location(arr, l):
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if(arr[row][col] == "."):
+                l[0] = row
+                l[1] = col
+                return True
+    return False
+
+# def solve_grid(grid, sources):
+#      # 'l' is a list variable that keeps the 
+#     # record of row and col in 
+#     # find_empty_location Function    
+#     l = [0, 0]
+    
+#     # If there is no unassigned 
+#     # location, we are done    
+#     if(not find_empty_location(grid, l)):
+#         return True, None
+    
+#     # Assigning list values to row and col 
+#     # that we got from the above Function 
+#     row = l[0]
+#     col = l[1]
+    
+#     # consider digits 1 to 9
+#     for source in sources:
+#         copied = grid
+#         copied[row][col] = source
+
+#         # if looks promising
+#         if(isValidGrid(copied)):
+            
+#             # make tentative assignment
+#             copied[row][col] = source
+
+#             # return, if success, 
+#             # ya ! 
+#             if(solve_grid(copied, sources)[0]):
+#                 print(copied)
+#                 return (True, copied)
+
+#             # failure, unmake & try again
+#             copied[row][col] = "."
+            
+#     # this triggers backtracking        
+#     return (False, None)
