@@ -1,4 +1,4 @@
-from solver import parse
+from noq_solver import parse
 from constants import *
 import copy
 from profiler import *
@@ -121,7 +121,7 @@ def colored_board(solution, sources):
     return "\n".join(printed_rows) + COLORS["ENDC"]
     
 def find_paths(solution_grid, sources):
-    print("Finding paths for board: ")
+    print("Solved: ")
     print(colored_board(solution_grid, sources))
 
     source_set = copy.deepcopy(sources)
