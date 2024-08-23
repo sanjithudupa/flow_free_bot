@@ -1,6 +1,7 @@
 from solver import parse
 from constants import *
 import copy
+from profiler import *
 
 def get_neighbors(cell):
     dirs = ["up", "left", "down", "right"]
@@ -121,7 +122,7 @@ def colored_board(solution, sources):
     
 def find_paths(solution_grid, sources):
     print("Finding paths for board: ")
-    print(colored_board(solution, sources))
+    print(colored_board(solution_grid, sources))
 
     source_set = copy.deepcopy(sources)
 
@@ -155,17 +156,18 @@ def find_paths(solution_grid, sources):
                 # print(f"appended {paths}")
                 source_set.remove(source)
     return paths
-                
 
-if __name__ == "__main__":
-    puzzle_str ="""
+puzzle_str ="""
 1.2.3
 ..4.5
 .....
 .2.3.
 .145.
-"""
+"""    
+
+if __name__ == "__main__":
     sources, grid = parse(puzzle_str)
+    start_profiler()
     solution = solve(grid, sources)
 
     if solution:
@@ -173,3 +175,5 @@ if __name__ == "__main__":
         print(paths)
     else:
         print("No solution found.")
+    
+    end_profiler()
