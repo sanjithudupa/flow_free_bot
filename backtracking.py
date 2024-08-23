@@ -2,7 +2,7 @@ from solver import parse
 from constants import *
 import copy
 
-def get_neighbors(grid, cell):
+def get_neighbors(cell):
     dirs = ["up", "left", "down", "right"]
     neighbors = [ add(cell, DIRECTIONS[direction]) for direction in dirs]
 
@@ -12,7 +12,7 @@ def get_neighbors(grid, cell):
     legal = []
     for neighbor in neighbors:
         if valid(neighbor):
-            legal.append(grid[neighbor[0]][neighbor[1]])
+            legal.append(neighbor)
     
     return legal
     # return [grid[neighbor[0]][neighbor[1]] for neighbor in neighbors if valid(neighbor)]
@@ -46,9 +46,10 @@ def isValidGrid(grid):
             is_source =  cell[:1] == "s" # it is a source node
             cell_color = cell[1:] if is_source else cell
 
-            neighbors = get_neighbors(grid, [r,c])
+            neighbors = get_neighbors([r,c])
             count = 0
-            for neighbor in neighbors:
+            for nr, nc in neighbors:
+                neighbor = grid[nr][nc]
                 neighbor_color = neighbor[1:] if neighbor[:1] == "s" else neighbor
                 count += 1 if neighbor == "." or cell_color == neighbor_color else 0
                 
@@ -116,8 +117,45 @@ def colored_board(solution, sources):
             print_row += (f"{COLORS[color_keys[color_index]]}{cell}")
         printed_rows.append(print_row)
     
-    return "\n".join(printed_rows)
+    return "\n".join(printed_rows) + COLORS["ENDC"]
     
+def find_paths(solution_grid, sources):
+    print("Finding paths for board: ")
+    print(colored_board(solution, sources))
+
+    source_set = copy.deepcopy(sources)
+
+    paths = []
+    for r in range(len(solution_grid)):
+        for c in range(len(solution_grid[0])):
+            cell = solution_grid[r][c]
+            if len(cell) == 2:
+                source = cell[1:]
+                if not source in source_set: # this is the end of a path
+                    continue
+                
+                path = []
+                stack = [[r,c]] # iterative dfs to get pathpoints
+                while len(stack) > 0:
+
+                    popped = stack.pop()
+                    path.append(popped)
+                    neighbors = get_neighbors(popped)
+                    # print(stack, path, neighbors)
+
+                    for neighbor_coord in neighbors:
+                        neighbor = solution_grid[neighbor_coord[0]][neighbor_coord[1]]
+                        neighbor = neighbor[1:] if len(neighbor) == 2 else neighbor
+                        # print(neighbor_coord, neighbor, neighbor == source and not neighbor_coord in path)
+
+                        if neighbor == source and not neighbor_coord in path:
+                            stack.append(neighbor_coord)
+                
+                paths.append(path)
+                # print(f"appended {paths}")
+                source_set.remove(source)
+    return paths
+                
 
 if __name__ == "__main__":
     puzzle_str ="""
@@ -131,6 +169,7 @@ if __name__ == "__main__":
     solution = solve(grid, sources)
 
     if solution:
-        print(colored_board(solution, sources))
+        paths = find_paths(solution, sources)
+        print(paths)
     else:
         print("No solution found.")
