@@ -46,5 +46,8 @@ def solve_time_trial():
         solve_puzzle()
         time.sleep(0.75)
 
+# time.sleep(2)
+# solve_puzzle()
+
 time.sleep(2)
-solve_puzzle()
+print(get_puzzle_str())

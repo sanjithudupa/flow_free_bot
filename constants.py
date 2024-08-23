@@ -11,8 +11,8 @@ TOP_LEFT = [0, 193]
 SIZE = [715, 715]
 BOTTOM_RIGHT = add(TOP_LEFT, SIZE)
 
-rows = 8
-cols = 8
+rows = 5
+cols = 5
 PUZZLE_SIZE = [rows, cols]
 SQUARE_SIZE = divideVec(SIZE, PUZZLE_SIZE)
 
@@ -33,6 +33,20 @@ IMAGE_SQUARES = [[
     asTuple(add([SQUARE_SIZE[0] * col, SQUARE_SIZE[0] * row], OFFSET)) for col in range(PUZZLE_SIZE[1])
 ] for row in range(PUZZLE_SIZE[0])]
 
+DIRECTIONS = {
+    "left": [0, -1],
+    "right": [0, 1],
+    "up": [-1, 0],
+    "down": [1, 0]
+}
+
+INVERSES = {
+    "left": "right",
+    "right": "left",
+    "up": "down",
+    "down": "up"
+}
+
 def getLocation(gridCell):
     return SQUARES[gridCell[0]][gridCell[1]]
 
@@ -41,3 +55,16 @@ def getImageLocation(gridCell):
 
 def asScreen(coord):
     return asTuple(divideScalar(coord, SCALE_FACTOR))
+
+
+COLORS = {
+    "HEADER": '\033[95m',
+    "OKBLUE": '\033[94m',
+    "OKCYAN": '\033[96m',
+    "OKGREEN": '\033[92m',
+    "WARNING": '\033[93m',
+    "FAIL": '\033[91m',
+    "ENDC": '\033[0m',
+    "BOLD": '\033[1m',
+    "UNDERLINE": '\033[4m'
+}

@@ -4,6 +4,7 @@ from urllib.request import urlopen
 from matplotlib import pyplot as plt
 import matplotlib
 import numpy as np
+from constants import *
 
 puzzle_str ="""
 1.2.3
@@ -59,20 +60,6 @@ def request_solution(puzzle):
     
     return json.load(urlopen(url))
 
-DIRECTIONS = {
-    "left": [0, -1],
-    "right": [0, 1],
-    "up": [-1, 0],
-    "down": [1, 0]
-}
-
-INVERSES = {
-    "left": "right",
-    "right": "left",
-    "up": "down",
-    "down": "up"
-}
-
 CONNECTIONS = { 
     "top_end": ["down"], 
     "bottom_end": ["up"], 
@@ -120,9 +107,9 @@ def parse_solution(puzzle, solution):
 
     return grid, ends
 
-def find_paths(puzzle, grid, ends):
-    rows = puzzle["r"]
-    cols = puzzle["c"]
+def find_paths(grid, ends):
+    # rows = puzzle["r"]
+    # cols = puzzle["c"]
 
     print(grid)
     print(ends)
@@ -181,7 +168,7 @@ def solve(puzzle):
     solution = res['1']
     grid, ends = parse_solution(puzzle, solution)
     
-    paths = find_paths(puzzle, grid, ends)
+    paths = find_paths(grid, ends)
     return paths
 
 paths = [[[4, 3], [4, 4], [3, 4], [2, 4], [1, 4]], [[4, 2], [3, 2], [2, 2], [1, 2]], [[4, 1], [4, 0], [3, 0], [2, 0], [1, 0], [0, 0]], [[3, 3], [2, 3], [1, 3], [0, 3], [0, 4]], [[3, 1], [2, 1], [1, 1], [0, 1], [0, 2]]]
