@@ -11,8 +11,8 @@ TOP_LEFT = [0, 193]
 SIZE = [715, 715]
 BOTTOM_RIGHT = add(TOP_LEFT, SIZE)
 
-rows = 8
-cols = 8
+rows = 5
+cols = 5
 PUZZLE_SIZE = [rows, cols]
 SQUARE_SIZE = divideVec(SIZE, PUZZLE_SIZE)
 

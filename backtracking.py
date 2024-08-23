@@ -2,33 +2,6 @@ from solver import parse
 from constants import *
 import copy
 
-# puzzle_str ="""
-# 1.2.3
-# ..4.5
-# .....
-# .2.3.
-# .145.
-# """
-
-# puzzle_str = """
-# ...12
-# 1....
-# ..3..
-# ...4.
-# 243..
-# """
-
-puzzle_str = """
-....1.23
-....4...
-..5....1
-....46..
-........
-..52.6..
-.....3..
-........
-"""
-
 def get_neighbors(grid, cell):
     dirs = ["up", "left", "down", "right"]
     neighbors = [ add(cell, DIRECTIONS[direction]) for direction in dirs]
@@ -84,27 +57,6 @@ def isValidGrid(grid):
             
     return True
 
-# def dfs(grid, sources):
-#     sawOne = False
-
-#     r = 0
-#     for row in grid:
-#         c = 0
-#         for square in row:
-#             if square == ".":
-#                 sawOne = True
-#                 for source in sources:
-#                     np = copy.deepcopy(grid)
-#                     np[r][c] = source
-#                     if isValidGrid(np):
-#                         return dfs(np, sources)
-#             c += 1
-#         r += 1
-
-#     if not sawOne:
-#         return grid
-#     return grid
-
 def dfs(grid, sources):
     for r in range(len(grid)):
         for c in range(len(grid[r])):
@@ -119,7 +71,7 @@ def dfs(grid, sources):
                 return None  # If no valid path, return None
     return grid
 
-def _solve(grid, sources):
+def try_solution(grid, sources):
     solvable = isValidGrid(grid)
     if not solvable:
         return None
@@ -139,7 +91,7 @@ def solve(grid, sources):
     count = 0
     
     while count < max_attempts:
-        solution = _solve(copy.deepcopy(grid), sources)
+        solution = try_solution(copy.deepcopy(grid), sources)
         
         if solution is not None and not has_empty(solution) and isValidGrid(solution):
             return solution
@@ -167,62 +119,18 @@ def colored_board(solution, sources):
     return "\n".join(printed_rows)
     
 
+if __name__ == "__main__":
+    puzzle_str ="""
+1.2.3
+..4.5
+.....
+.2.3.
+.145.
+"""
+    sources, grid = parse(puzzle_str)
+    solution = solve(grid, sources)
 
-sources, grid = parse(puzzle_str)
-solution = solve(grid, sources)
-
-if solution:
-    print(colored_board(solution, sources))
-else:
-    print("No solution found.")
-
-
-
-
-def find_empty_location(arr, l):
-    for row in range(len(grid)):
-        for col in range(len(grid[0])):
-            if(arr[row][col] == "."):
-                l[0] = row
-                l[1] = col
-                return True
-    return False
-
-# def solve_grid(grid, sources):
-#      # 'l' is a list variable that keeps the 
-#     # record of row and col in 
-#     # find_empty_location Function    
-#     l = [0, 0]
-    
-#     # If there is no unassigned 
-#     # location, we are done    
-#     if(not find_empty_location(grid, l)):
-#         return True, None
-    
-#     # Assigning list values to row and col 
-#     # that we got from the above Function 
-#     row = l[0]
-#     col = l[1]
-    
-#     # consider digits 1 to 9
-#     for source in sources:
-#         copied = grid
-#         copied[row][col] = source
-
-#         # if looks promising
-#         if(isValidGrid(copied)):
-            
-#             # make tentative assignment
-#             copied[row][col] = source
-
-#             # return, if success, 
-#             # ya ! 
-#             if(solve_grid(copied, sources)[0]):
-#                 print(copied)
-#                 return (True, copied)
-
-#             # failure, unmake & try again
-#             copied[row][col] = "."
-            
-#     # this triggers backtracking        
-#     return (False, None)
+    if solution:
+        print(colored_board(solution, sources))
+    else:
+        print("No solution found.")
